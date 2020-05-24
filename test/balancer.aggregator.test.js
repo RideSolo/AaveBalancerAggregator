@@ -356,7 +356,7 @@ contract('converter', (accounts) => {
   })
 
 
-  it('#9 Check if the ChainlinkProxyPriceProvider latestAnswer does not change when tokens are added the pool', async () => {
+  it('#9 Check if the ChainlinkProxyPriceProvider latestAnswer does not change when tokens are added to the pool', async () => {
     await pool.finalize({from:admin});
     let totalSupply = await pool.totalSupply();
 
