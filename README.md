@@ -7,9 +7,9 @@ The developed [BalancerAggregator](https://github.com/RideSolo/AaveBalancerAggre
 BalancerAggregator contract has to be used as a source for the pool token when setting up the ChainlinkProxyPriceProvider, the required chainlink feed sources must be set in BalancerAggregator.
 
 ```
------------------------------                                    --------------------           /== latestAnswer ==> ChainLinkAggregator 1
-|ChainlinkProxyPriceProvider|==== latestAnswer =================>|BalancerAggregator|===========|== latestAnswer ==> ChainLinkAggregator 2
------------------------------                                    --------------------           \== latestAnswer ==> ChainLinkAggregator 3
+-----------------------------                                    --------------------           /== latestAnswer ==> ChainLinkAggregator 1   
+|ChainlinkProxyPriceProvider|==== latestAnswer =================>|BalancerAggregator|===========|== latestAnswer ==> ChainLinkAggregator 2   
+-----------------------------                                    --------------------           \== latestAnswer ==> ChainLinkAggregator 3   
 			||                     -------------                   ||
 			=== getAssetPrice == > |PriceOracle| <== getAssetPrice===
                                                -------------
