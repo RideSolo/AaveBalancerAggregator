@@ -12,7 +12,7 @@ BalancerAggregator contract has to be used as a source for the pool token when s
 -----------------------------                       --------------------  \== latestAnswer ==> ChainLinkAggregator 3
 			||                     -------------                    ||
 			=== getAssetPrice == > |PriceOracle| <== getAssetPrice====
-                                   -------------
+                                               -------------
 ```
 
 The implemented contract act as a middle aggregator between Aave and ChainLink feeds. BalancerAggregator uses the fallback price oracle managed by the team to get the token prices if the ChainLinks feeds return zero. 
