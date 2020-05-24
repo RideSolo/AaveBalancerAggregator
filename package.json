@@ -1,0 +1,38 @@
+{
+  "name": "AaveBalancerAggregator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "truffle compile",
+    "test": "truffle test --report"
+  },
+  "keywords": [
+    "Aave",
+    "Balance",
+    "Chainlink",
+    "Blockchain",
+    "Ethereum",
+    "Liquidity Pool",
+    "Decentrilized Lending Pool"
+  ],
+  "author": "github.com/ridesolo",
+  "dependencies": {
+    "bignumber.js": "^9.0.0",
+    "decimal.js": "^10.2.0",
+    "web3": "^1.2.6"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "^3.0.1",
+    "@openzeppelin/test-helpers": "^0.5.5",
+    "openzeppelin-solidity": "2.5.0",
+    "@truffle/contract": "^4.2.0",
+    "@truffle/hdwallet-provider": "^1.0.34",
+    "chai": "^4.2.0",
+    "chai-bn": "^0.2.1",
+    "dotenv": "^8.2.0",
+    "eth-gas-reporter": "^0.2.16",
+    "truffle": "^5.1.21",
+    "truffle-plugin-verify": "^0.3.10"
+  }
+}
