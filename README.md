@@ -19,7 +19,7 @@ The implemented contract act as a middle aggregator between Aave and ChainLink f
 
 If a chainlink feed returns zero and the Aave managed price oracle returns zero for the same asset the BalancerAggregator for a specific balancer pool will return zero, even if all other tokens are set correctly. In the previous case ChainlinkProxyPriceProvider has to fallback to the managed price oracle to get the price of the pool token.
 
-The implemented [test](https://github.com/RideSolo/AaveBalancerAggregator/blob/master/test/balancer.aggregator.test.js) shows the different deployment steps, the error cases and fallback cases to Aave price oracle manged by the governance. 
+The implemented [test](https://github.com/RideSolo/AaveBalancerAggregator/blob/master/test/balancer.aggregator.test.js) shows the different deployment steps, the error cases and fallback cases to Aave price oracle. 
 
 ## Setup
 
