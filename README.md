@@ -33,7 +33,7 @@ The implemented [test](https://github.com/RideSolo/AaveBalancerAggregator/blob/m
 
 ```console
 $ git clone https://github.com/ridesolo/AaveBalancerAggregator.git
-$ cd cd AaveBalancerAggregator
+$ cd AaveBalancerAggregator
 $ git submodule update --init
 $ npm install
 ```
