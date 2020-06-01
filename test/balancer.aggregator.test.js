@@ -22,7 +22,7 @@ const {
   expectRevert,
 } = require('@openzeppelin/test-helpers');
 
-contract('converter', (accounts) => {
+contract('BalancerAggregator', (accounts) => {
 
   const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -99,7 +99,6 @@ contract('converter', (accounts) => {
 
   }
 
-
   before(async () => {
 
   })
@@ -117,8 +116,8 @@ contract('converter', (accounts) => {
     await fallBackPriceOracle.setAssetPrice(dai.address, daiEthPriceFb, {from:admin});
     await fallBackPriceOracle.setAssetPrice(pool.address, poolTokenEthPriceFb, {from:admin});
 
-    assets =  [weth.address, bat.address, dai.address];
-    sources = [ZERO_ADDRESS, _mockAggregatorBAT.address, _mockAggregatorDAI.address];
+    assets =  [weth.address, dai.address, bat.address];
+    sources = [ZERO_ADDRESS, _mockAggregatorDAI.address, _mockAggregatorBAT.address];
 
     etherTokens = [weth.address];
 
@@ -236,7 +235,7 @@ contract('converter', (accounts) => {
     let _mockAggregatorBAT = await MockAggregatorBAT.new(0,{from: admin});
     let _mockAggregatorDAI = await MockAggregatorDAI.new(daiEthPrice,{from: admin});
 
-    let _sources = [ ZERO_ADDRESS, _mockAggregatorBAT.address, _mockAggregatorDAI.address ];
+    let _sources = [ ZERO_ADDRESS, _mockAggregatorDAI.address, _mockAggregatorBAT.address];
 
     let balancerAggregator = await BalancerAggregator.new(
       pool.address, assets, _sources, 
@@ -266,7 +265,7 @@ contract('converter', (accounts) => {
     let _mockAggregatorBAT = await MockAggregatorBAT.new(0,{from: admin});
     let _mockAggregatorDAI = await MockAggregatorDAI.new(0,{from: admin});
 
-    let _sources = [ ZERO_ADDRESS, _mockAggregatorBAT.address, _mockAggregatorDAI.address ];
+    let _sources = [ ZERO_ADDRESS, _mockAggregatorDAI.address, _mockAggregatorBAT.address];
 
     let balancerAggregator = await BalancerAggregator.new(
       pool.address, assets, _sources, 
@@ -399,5 +398,133 @@ contract('converter', (accounts) => {
     chai.expect(poolTokenEthPrice).to.be.bignumber.equal(newPoolTokenEthPrice);
     chai.expect(newTotalSupply).to.be.bignumber.equal(totalSupply.add(poolTokensAmountOut));
 
+  })
+
+  it('#10 check view functions returns ', async () => {
+    await pool.finalize({from:admin});
+    let balancerAggregator = await BalancerAggregator.new(
+      pool.address, 
+      assets, 
+      sources, 
+      etherTokens,
+      fallBackPriceOracle.address, 
+      {from:admin}
+    );
+
+    chai.expect(await balancerAggregator.getBalancerPool()).to.be.equal(pool.address);
+    chai.expect(await balancerAggregator.isEth("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")).to.be.equal(true);
+    chai.expect(await balancerAggregator.isEth("0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE")).to.be.equal(true);
+    chai.expect(await balancerAggregator.isEth(weth.address)).to.be.equal(true);
+    chai.expect(await balancerAggregator.isEth(dai.address)).to.be.equal(false);
+    chai.expect(await balancerAggregator.isEth(bat.address)).to.be.equal(false);
+    chai.expect(await balancerAggregator.getBalancerPoolTokens()).to.eql(assets);
+    chai.expect(await balancerAggregator.getFallBackOracle()).to.be.equal(fallBackPriceOracle.address);
+
+  })
+
+
+  it('#11 check setEtherToken function', async () => {
+    await pool.finalize({from:admin});
+
+    let balancerAggregator = await BalancerAggregator.new(
+      pool.address, 
+      assets, 
+      sources, 
+      etherTokens,
+      fallBackPriceOracle.address, 
+      {from:admin}
+    );
+
+    let tkn = await TToken.new('Token', 'TKN', 18);
+
+    await expectRevert(
+      balancerAggregator.setEtherToken(tkn.address,false,{from:user1}),
+      "Ownable: caller is not the owner"
+    );
+
+    await expectRevert(
+      balancerAggregator.setEtherToken(ZERO_ADDRESS,false,{from:admin}),
+      "setEtherToken: Incorrect token address"
+    );
+
+    await expectRevert(
+      balancerAggregator.setEtherToken(tkn.address,true,{from:admin}),
+      "setEtherToken: Token is not bound to the balancer pool"
+    );
+
+    await balancerAggregator.setEtherToken(weth.address,false,{from:admin});
+    chai.expect(await balancerAggregator.isEth(weth.address)).to.be.equal(false);
+
+    await balancerAggregator.setEtherToken(weth.address,true,{from:admin});
+    chai.expect(await balancerAggregator.isEth(weth.address)).to.be.equal(true);
+  })
+
+
+  it('#12 check setFallbackOracle function', async () => {
+    await pool.finalize({from:admin});
+
+    let balancerAggregator = await BalancerAggregator.new(
+      pool.address, 
+      assets, 
+      sources, 
+      etherTokens,
+      fallBackPriceOracle.address, 
+      {from:admin}
+    );
+
+    let fbOracle = await PriceOracle.new({from:admin});
+
+    await expectRevert(
+      balancerAggregator.setFallbackOracle(fbOracle.address,{from:user1}),
+      "Ownable: caller is not the owner"
+    );
+
+    await expectRevert(
+      balancerAggregator.setFallbackOracle(ZERO_ADDRESS,{from:admin}),
+      "internalSetFallbackOracle: Incorrect address"
+    );
+
+    await balancerAggregator.setFallbackOracle(fbOracle.address,{from:admin});
+
+    chai.expect(await balancerAggregator.getFallBackOracle()).to.be.not.equal(fallBackPriceOracle.address);
+    chai.expect(await balancerAggregator.getFallBackOracle()).to.be.equal(fbOracle.address);
+
+    await balancerAggregator.setFallbackOracle(fallBackPriceOracle.address,{from:admin});
+
+    chai.expect(await balancerAggregator.getFallBackOracle()).to.be.equal(fallBackPriceOracle.address);
+    chai.expect(await balancerAggregator.getFallBackOracle()).to.be.not.equal(fbOracle.address);
+
+  })
+
+  it('#12 check setAssetSources function', async () => {
+    await pool.finalize({from:admin});
+
+    let balancerAggregator = await BalancerAggregator.new(
+      pool.address, 
+      assets, 
+      sources, 
+      etherTokens,
+      fallBackPriceOracle.address, 
+      {from:admin}
+    );
+
+    let tkn = await TToken.new('Token', 'TKN', 18);
+
+    await expectRevert(
+      balancerAggregator.setAssetSources(assets,sources,{from:user1}),
+      "Ownable: caller is not the owner"
+    );
+
+    assets.push(tkn.address)
+    await expectRevert(
+      balancerAggregator.setAssetSources(assets,sources,{from:admin}),
+     "INCONSISTENT_PARAMS_LENGTH"
+    );
+    assets.pop();
+    assets[1] = tkn.address;
+    await expectRevert(
+      balancerAggregator.setAssetSources(assets,sources,{from:admin}),
+     "checkAssets: One or more listed tokens in the balancer pool are not present in assets"
+    );
   })
 })

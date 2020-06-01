@@ -5,9 +5,9 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
-import "../aave/contracts/interfaces/IPriceOracleGetter.sol";
-import "../aave/contracts/interfaces/IChainlinkAggregator.sol";
-import "../aave/contracts/libraries/EthAddressLib.sol";
+import "./aave/contracts/interfaces/IPriceOracleGetter.sol";
+import "./aave/contracts/interfaces/IChainlinkAggregator.sol";
+import "./aave/contracts/libraries/EthAddressLib.sol";
 // import "../aave/contracts/libraries/WadRayMath.sol";
 
 import "./interfaces/IBPool.sol";
@@ -22,6 +22,7 @@ contract BalancerAggregator is IAggregator, IBalancerAggregator, Ownable{
 
     address public WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public ETH_ADDRESS = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+
     mapping(address => bool) public IS_ETH;
 
     using SafeMath for uint256;
@@ -157,6 +158,7 @@ contract BalancerAggregator is IAggregator, IBalancerAggregator, Ownable{
     /// @notice Internal function to set the fallbackOracle
     /// @param _fallbackOracle The address of the fallbackOracle
     function internalSetFallbackOracle(address _fallbackOracle) internal {
+        require(_fallbackOracle != address(0x0),"internalSetFallbackOracle: Incorrect address");
         fallbackOracle = IPriceOracleGetter(_fallbackOracle);
         emit FallbackOracleUpdated(_fallbackOracle);
     }
@@ -191,8 +193,13 @@ contract BalancerAggregator is IAggregator, IBalancerAggregator, Ownable{
     function getBalancerPool() external view returns (address) {
         return bpoolAddress;
     }
+
     function getBalancerPoolTokens() external view returns(address[] memory) {
         return bpool.getFinalTokens();
+    }
+
+    function getFallBackOracle() external view returns(address) {
+        return address(fallbackOracle);
     }
 
     function latestAnswer() external view returns (int256) {
@@ -219,6 +226,7 @@ contract BalancerAggregator is IAggregator, IBalancerAggregator, Ownable{
             // if _unsignedPrice of any listed token in a pool is equal to zero latestAnswer() must 
             // return zero, so ChainlinkProxyPriceProvider can fall back to to the value of the balancer
             // pool token set by Aave governance.
+
             if(_unsignedPrice == 0) return int256(0);
 
             _bal = bpool.getBalance(_token);

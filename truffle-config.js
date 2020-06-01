@@ -3,9 +3,10 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 require("dotenv").config();
 
 options = {
-  contracts_directory: "./{aave/contracts,balancer/contracts,contracts}/**/*.sol",
+  // contracts_directory: "./{aave/contracts,balancer/contracts,contracts}/**/*.sol",
   plugins: [
-    "truffle-plugin-verify"
+    "truffle-plugin-verify",
+    "solidity-coverage"
   ],
   api_keys: {
       etherscan: process.env.ETHERSCAN_API_KEY
