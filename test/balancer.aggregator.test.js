@@ -496,7 +496,7 @@ contract('BalancerAggregator', (accounts) => {
 
   })
 
-  it('#12 check setAssetSources function', async () => {
+  it('#13 check setAssetSources function', async () => {
     await pool.finalize({from:admin});
 
     let balancerAggregator = await BalancerAggregator.new(

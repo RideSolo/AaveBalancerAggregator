@@ -44,6 +44,12 @@ $ npm run compile
 $ npm run test 
 ```
 
+### Coverage Test
+
+```console
+$ npm run test-coverage
+```
+
 ## Important Code
 
 - [BalancerAggregator](https://github.com/RideSolo/AaveBalancerAggregator/blob/master/contracts/BalancerAggregator.sol) contract.
