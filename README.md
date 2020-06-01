@@ -43,6 +43,8 @@ $ npm install
 $ npm run test-coverage
 ```
 
+![coverage printout](https://github.com/RideSolo/AaveBalancerAggregator/raw/master/coverage.png)
+
 ### Verification
 
 ```console
