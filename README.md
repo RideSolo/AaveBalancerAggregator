@@ -34,20 +34,20 @@ The implemented [test](https://github.com/RideSolo/AaveBalancerAggregator/blob/m
 ```console
 $ git clone https://github.com/ridesolo/AaveBalancerAggregator.git
 $ cd AaveBalancerAggregator
-$ git submodule update --init
 $ npm install
-```
-### Verification
-
-```console
-$ npm run compile
-$ npm run test 
 ```
 
 ### Coverage Test
 
 ```console
 $ npm run test-coverage
+```
+
+### Verification
+
+```console
+$ npm run compile
+$ npm run test 
 ```
 
 ## Important Code
