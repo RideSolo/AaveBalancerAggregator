@@ -1,6 +1,0 @@
-[submodule "balancer"]
-	path = balancer
-	url = https://github.com/balancer-labs/balancer-core.git
-[submodule "aave"]
-	path = aave
-	url = https://github.com/aave/aave-protocol.git
