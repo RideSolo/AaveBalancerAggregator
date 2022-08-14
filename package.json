@@ -24,7 +24,7 @@
     "web3": "^1.2.6"
   },
   "devDependencies": {
-    "@openzeppelin/contracts": "^3.0.1",
+    "@openzeppelin/contracts": "^4.7.2",
     "@openzeppelin/test-helpers": "^0.5.5",
     "@truffle/contract": "^4.2.0",
     "@truffle/hdwallet-provider": "^1.0.34",
